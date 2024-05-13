@@ -1,8 +1,16 @@
 import amqplib from 'amqplib';
-
+const rabbitMqSetting={
+    protocol:'amqp',
+    hostname:'localhost',
+    port:5672,
+    username:'mohamedanas',
+    password:'RabbitMq123',
+    vhost:'/',
+    authMechanism:['PLAIN','AMQPLAIN','EXTERNAL']
+}
 export const sendMessage = async (queueName, msg) => {
     try {
-        const connection = await amqplib.connect('amqp://localhost');
+        const connection = await amqplib.connect(rabbitMqSetting);
         const channel = await connection.createChannel();
         await channel.assertQueue(queueName, { durable: false });
 
@@ -11,7 +19,6 @@ export const sendMessage = async (queueName, msg) => {
 
         console.log('sent: ', messageString);
 
-        // Wait for a moment to ensure the message is sent
         await new Promise(resolve => setTimeout(resolve, 100));
 
         await connection.close();

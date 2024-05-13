@@ -1,8 +1,16 @@
 import amqplib from 'amqplib';
-
+const rabbitMqSetting={
+    protocol:'amqp',
+    hostname:'localhost',
+    port:5672,
+    username:'mohamedanas',
+    password:'RabbitMq123',
+    vhost:'/',
+    authMechanism:['PLAIN','AMQPLAIN','EXTERNAL']
+}
 export const receivedMessage = async (queueName) => {
     try {
-        const connection = await amqplib.connect('amqp://localhost');
+        const connection = await amqplib.connect(rabbitMqSetting);
         const channel = await connection.createChannel();
         await channel.assertQueue(queueName, { durable: false });
         console.log(`Waiting for messages in queue: ${queueName}`);
@@ -13,22 +21,17 @@ export const receivedMessage = async (queueName) => {
             channel.consume(queueName, (msg) => {
                 const messageObject = JSON.parse(msg.content.toString());
                 messages.push(messageObject);
-
-                // Acknowledge the message after processing
                 channel.ack(msg);
                 
                 console.log("Done processing message");
             }, { noAck: false });
 
-            // Set a longer timeout to wait for messages
             setTimeout(() => {
-                // Close the channel and connection
                 channel.close();
                 connection.close();
 
-                // Resolve the promise with the collected messages
                 resolve(messages);
-            }, 5000); // Adjust the timeout as needed
+            }, 5000); 
         });
     } catch (err) {
         console.error(err);
