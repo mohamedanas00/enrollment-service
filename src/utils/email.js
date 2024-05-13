@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-export const emailHtml = (Text ,InstructorName) => {
+export const emailHtml = (Text, InstructorName) => {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   <html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
   
@@ -78,7 +78,7 @@ export const emailHtml = (Text ,InstructorName) => {
                                                                                   </tr>
                                                                                   <tr>
                                                                                       <td align="left" class="esd-block-text es-p30t">
-                                                                                          <p><strong>Hi DR.${InstructorName}!</strong><br><br>we want to notify you that,<br><br>Recently,${Text}.<strong>Regards, Learnify Team</strong></p>
+                                                                                          <p><strong>Hi DR.${InstructorName}!</strong><br><br>we want to notify you that,<br><br>Recently,${Text}<br><br><strong>Regards, Learnify Team</strong><br><br></p>
                                                                                       </td>
                                                                                   </tr>
                                                                               </tbody>
@@ -106,7 +106,7 @@ export const emailHtml = (Text ,InstructorName) => {
                                                                                                           <table>
                                                                                                               <tbody>
                                                                                                                   <tr>
-                                                                                                                      <td class="esd-block-image" style="font-size: 0px;"><a target="_blank" href="https://viewstripo.email/"><img src="https://as2.ftcdn.net/v2/jpg/01/34/29/31/1000_F_134293169_ymHT6Lufl0i94WzyE0NNMyDkiMCH9HWx.jpg" class="p_image" alt="Avatar" width="64" style="display: block; border-radius: 18px;" title="Avatar"></a></td>
+                                                                                                                      <td class="esd-block-image" style="font-size: 0px;"><a target="_blank" href="https://viewstripo.email/"><img src="https://cdn.iconscout.com/icon/premium/png-512-thumb/course-1648742-1400672.png?f=webp&w=256" class="p_image" alt="Avatar" width="64" style="display: block; border-radius: 18px;" title="Avatar"></a></td>
                                                                                                                   </tr>
                                                                                                               </tbody>
                                                                                                           </table>
@@ -117,7 +117,7 @@ export const emailHtml = (Text ,InstructorName) => {
                                                                                                               <tbody>
                                                                                                                   <tr>
                                                                                                                       <td class="esd-block-text" esd-links-underline="none" esd-links-color="#000000">
-                                                                                                                          <h3 class="p_name"><b>Courses</b></h3>
+                                                                                                                          <h3 class="p_name"><b>Learnify Courses📚</b></h3>
                                                                                                                       </td>
                                                                                                                   </tr>
                                                                                                                   <tr>
@@ -168,14 +168,10 @@ export const emailHtml = (Text ,InstructorName) => {
       </div>
   </body>
   
-  </html>`
+  </html>`;
 };
 
-export const sendEmail = async function ({
-  to,
-  subject,
-  html,
-} = {}) {
+export const sendEmail = async function ({ to, subject, html } = {}) {
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

@@ -10,6 +10,20 @@ const enrollmentSchema = new Schema(
       type: String,
       required: true,
     },
+    instructor: {
+      id: {
+        type: Number,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      email: {
+        type: String,
+        required: true,
+      },
+    },
     student: {
       id: {
         type: Number,
@@ -26,7 +40,7 @@ const enrollmentSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["accepted", "rejected", "pending"],
+      enum: ["accepted", "rejected", "pending","cancelled"],
       default: "pending",
     },
   },

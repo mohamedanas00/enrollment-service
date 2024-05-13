@@ -25,7 +25,6 @@ const auth = (userRoles = []) => {
         if (!userRoles.includes(decode.role)) {
             return next(new ErrorClass("Permission Denied🚫!", StatusCodes.UNAUTHORIZED))
         }
-        console.log(decode);
         req.user = decode
         return next()
     })
