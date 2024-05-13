@@ -1,7 +1,6 @@
 import enrollmentModel from "../../../DB/models/Enrollment.model.js";
 import { asyncHandler } from "../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
-import { sendMessage } from "../../utils/rabbitMqSend.js";
 import logsModel from "../../../DB/models/logs.model.js";
 import { InstructorNotification } from "../../utils/notification.js";
 
@@ -64,4 +63,37 @@ export const CancelEnrollmentCourse = asyncHandler(async (req, res) => {
     action: `Cancel Enrolled in course ${isEnrolled.courseName}`,
   });
   res.status(StatusCodes.OK).json({ CancelEnrollment });
+});
+
+export const ManageEnrollmentCourse = asyncHandler(async (req, res) => {
+    const { Id } = req.params;
+    const { status } = req.body;
+    const instructor = req.user;
+
+    const isEnroll = await enrollmentModel.findOne({
+      _id: Id,
+      "instructor.id": instructor.id,
+    })
+
+    if (!isEnroll) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Unauthorized" });
+    }
+    if (isEnroll.status == status) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ message: "Already in this status" });
+    }
+    isEnroll.status = status;
+    const isEnrolled = await isEnroll.save();
+
+    await logsModel.create({
+        userId: req.user.id,
+        email: req.user.email,
+        role: req.user.role,
+        action: `Manage Enrolled in course ${isEnrolled.courseName} with status ${status}`,
+    })
+    InstructorNotification({ req, isEnrolled, operation: status });
+
+    res.status(StatusCodes.OK).json({ isEnrolled });
+ 
 });

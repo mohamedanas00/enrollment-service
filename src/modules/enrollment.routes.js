@@ -6,7 +6,8 @@ const enrollmentRoutes = Router();
 
 
 enrollmentRoutes.post('/enroll',auth(userAuth.student), enrollmentController.EnrollmentCourse);
-enrollmentRoutes.patch('/CAncelEnroll/:Id',auth(userAuth.student), enrollmentController.CancelEnrollmentCourse);
+enrollmentRoutes.patch('/CancelEnroll/:Id',auth(userAuth.student), enrollmentController.CancelEnrollmentCourse);
+enrollmentRoutes.patch('/ManageEnroll/:Id',auth(userAuth.instructor), enrollmentController.ManageEnrollmentCourse);
 
 
 export default enrollmentRoutes
