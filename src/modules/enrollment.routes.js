@@ -8,6 +8,8 @@ const enrollmentRoutes = Router();
 enrollmentRoutes.post('/enroll',auth(userAuth.student), enrollmentController.EnrollmentCourse);
 enrollmentRoutes.patch('/CancelEnroll/:Id',auth(userAuth.student), enrollmentController.CancelEnrollmentCourse);
 enrollmentRoutes.patch('/ManageEnroll/:Id',auth(userAuth.instructor), enrollmentController.ManageEnrollmentCourse);
-
+enrollmentRoutes.get('/GetCurrentEnroll',auth(userAuth.student), enrollmentController.getPendingEnrollments);
+enrollmentRoutes.get('/GetPastEnroll',auth(userAuth.student), enrollmentController.getPastEnrollments);
+enrollmentRoutes.get('/CheckIsEnrolled/:courseId', enrollmentController.checkIsEnrolled);
 
 export default enrollmentRoutes

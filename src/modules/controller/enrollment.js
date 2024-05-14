@@ -97,3 +97,34 @@ export const ManageEnrollmentCourse = asyncHandler(async (req, res) => {
     res.status(StatusCodes.OK).json({ isEnrolled });
  
 });
+
+export const getPendingEnrollments = asyncHandler(async (req, res) => {
+  const student = req.user;
+  const enrollments = await enrollmentModel
+    .find({ "student.id": student.id, status: "pending" })
+  res.status(StatusCodes.OK).json({ enrollments });
+})
+
+export const getPastEnrollments = asyncHandler(async (req, res) => {
+    const enrollments = await enrollmentModel
+      .find({ "student.id": req.user.id, status: { $ne: "pending" } })
+    res.status(StatusCodes.OK).json({ enrollments });
+  
+});
+
+export const checkIsEnrolled = asyncHandler(async (req, res) => {
+  const { courseId } = req.params;
+  const {userId} = req.query
+  console.log(userId);
+  console.log(courseId);
+  const isEnrolled = await enrollmentModel.findOne({
+    courseId,
+    "student.id": userId,
+    status: "accepted",
+  });
+  if (!isEnrolled) {
+    return res.status(StatusCodes.CONFLICT).json({ message: "Not enrolled" });
+  }
+  res.status(StatusCodes.OK).json({ message: "Enrolled" });
+});
+  

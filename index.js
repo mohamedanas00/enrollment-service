@@ -13,7 +13,7 @@ initApp(app, express);
 
 // const msg={"doctorId":"2","patientId":"3","Operation":"msa mne leko"};
 // await sendMessage("doctor-queue",msg)
-const messages = await receivedMessage("mohamed.edris7688@gmail.com");
-console.log(messages);
+// const messages = await receivedMessage("mohamed.edris7688@gmail.com");
+// console.log(messages);
 const port = +process.env.PORT;
 app.listen(port, () => console.log(`App listening on port:${port}!`));
