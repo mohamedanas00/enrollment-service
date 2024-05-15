@@ -118,6 +118,7 @@ export const getPastEnrollments = asyncHandler(async (req, res) => {
   
 });
 
+//?Using in another microservice to check if user is enrolled 
 export const checkIsEnrolled = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
   const {userId} = req.query
@@ -133,9 +134,18 @@ export const checkIsEnrolled = asyncHandler(async (req, res) => {
   }
   res.status(StatusCodes.OK).json({ message: "Enrolled" });
 });
-
+//?using in another microservice to delete enrollment
 export const DeleteEnrollmentCourses = asyncHandler(async (req, res) => {
   const {courseId} = req.params
   await enrollmentModel.deleteMany({courseId})
   res.status(StatusCodes.OK).json({ message: "Deleted" })
+})
+//?using in another microservice to delete enrollment
+//*updating name of course in enrollments
+export const UpdateCourseName = asyncHandler(async (req, res) => {
+  const {courseId} = req.params
+  const {name} = req.body
+  console.log(name,courseId);
+  await enrollmentModel.updateMany({courseId},{$set:{courseName:name}})
+  res.status(StatusCodes.OK).json({ message: "Updated" })
 })

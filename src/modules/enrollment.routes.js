@@ -12,5 +12,6 @@ enrollmentRoutes.get('/GetCurrentEnroll',auth(userAuth.student), enrollmentContr
 enrollmentRoutes.get('/GetPastEnroll',auth(userAuth.student), enrollmentController.getPastEnrollments);
 enrollmentRoutes.get('/CheckIsEnrolled/:courseId', enrollmentController.checkIsEnrolled);
 enrollmentRoutes.delete('/DeleteEnroll/:courseId', enrollmentController.DeleteEnrollmentCourses);
+enrollmentRoutes.patch('/UpdateEnrolledCourse/:courseId', enrollmentController.UpdateCourseName);
 
 export default enrollmentRoutes
