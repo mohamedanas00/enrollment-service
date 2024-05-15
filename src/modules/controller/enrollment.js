@@ -3,6 +3,7 @@ import { asyncHandler } from "../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
 import logsModel from "../../../DB/models/logs.model.js";
 import { InstructorNotification } from "../../utils/notification.js";
+import { UpdateEnrollmentCountWithCircuitBreaker } from "../../utils/UpdateCourseAPI.js";
 
 export const EnrollmentCourse = asyncHandler(async (req, res) => {
   const student = req.user;
@@ -16,6 +17,11 @@ export const EnrollmentCourse = asyncHandler(async (req, res) => {
     return res
       .status(StatusCodes.CONFLICT)
       .json({ message: "Already enrolled" });
+  }
+  const checking = await UpdateEnrollmentCountWithCircuitBreaker(courseId);
+  console.log(checking);
+  if (checking!==true) {
+    return res.status(StatusCodes.BAD_REQUEST).json({ checking }); 
   }
   const isEnrolled = await enrollmentModel.create({
     courseId,
@@ -127,4 +133,9 @@ export const checkIsEnrolled = asyncHandler(async (req, res) => {
   }
   res.status(StatusCodes.OK).json({ message: "Enrolled" });
 });
-  
+
+export const test = asyncHandler(async (req, res) => {
+  const x= await UpdateEnrollmentCountWithCircuitBreaker("673eb6f96366cdca81b05e85")
+  console.log(x);
+  res.status(StatusCodes.OK).json({ x });
+})

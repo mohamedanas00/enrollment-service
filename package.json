@@ -21,6 +21,7 @@
     "init": "^0.1.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.4",
-    "nodemailer": "^6.9.13"
+    "nodemailer": "^6.9.13",
+    "opossum": "^8.1.4"
   }
 }
