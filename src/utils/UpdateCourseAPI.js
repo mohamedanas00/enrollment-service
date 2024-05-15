@@ -46,20 +46,23 @@ export async function UpdateEnrollmentCountWithCircuitBreaker(courseId) {
     if (failedRequestsCount >= failedRequestsThreshold) {
       breaker.open();
     }
-    // Handle error
+    var Response = {};
     if (error.response) {
-      // The request was made and the server responded with a status code
-      console.log(error.response.status); // Status code
-      console.log(error.response.data); // Response data
-      return error.response;
+      //*The request was made and the server responded with a status code
+      Response.status = error.response.status;
+      Response.message = error.response.data;
+      return Response;
     } else if (error.request) {
-      // The request was made but no response was received
-      console.log(error.request);
-      return "Please try again";
+      //*The request was made but no response was received
+      Response.status = 400;
+      Response.message = "Please try again";
+      return Response;
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error", error.message);
-      return "Please try again after 10s";
+      //*Circuit Opened
+      //*Something happened in setting up the request that triggered an Error
+      Response.status = 400;
+      Response.message = "Please try again 10 seconds later";
+      return Response;
     }
   }
 }
