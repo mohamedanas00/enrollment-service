@@ -20,8 +20,8 @@ export const EnrollmentCourse = asyncHandler(async (req, res) => {
   }
   const checking = await UpdateEnrollmentCountWithCircuitBreaker(courseId);
   console.log(checking);
-  if (checking!==true) {
-    return res.status(StatusCodes.BAD_REQUEST).json({ checking }); 
+  if (checking.status !== 200) {
+    return res.status(checking.status).json({ message: checking.message });
   }
   const isEnrolled = await enrollmentModel.create({
     courseId,
@@ -145,7 +145,6 @@ export const DeleteEnrollmentCourses = asyncHandler(async (req, res) => {
 export const UpdateCourseName = asyncHandler(async (req, res) => {
   const {courseId} = req.params
   const {name} = req.body
-  console.log(name,courseId);
   await enrollmentModel.updateMany({courseId},{$set:{courseName:name}})
   res.status(StatusCodes.OK).json({ message: "Updated" })
 })
