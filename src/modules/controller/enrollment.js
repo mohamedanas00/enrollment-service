@@ -134,3 +134,8 @@ export const checkIsEnrolled = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Enrolled" });
 });
 
+export const DeleteEnrollmentCourses = asyncHandler(async (req, res) => {
+  const {courseId} = req.params
+  await enrollmentModel.deleteMany({courseId})
+  res.status(StatusCodes.OK).json({ message: "Deleted" })
+})
