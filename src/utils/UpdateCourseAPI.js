@@ -42,7 +42,6 @@ export async function UpdateEnrollmentCountWithCircuitBreaker(courseId) {
     if (failedRequestsCount >= failedRequestsThreshold) {
       breaker.open();
     }
-    //   console.error("Error calling checkEnrollment via CircuitBreaker:", error);
     return error.message;
   }
 }

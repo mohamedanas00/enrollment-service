@@ -134,8 +134,3 @@ export const checkIsEnrolled = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ message: "Enrolled" });
 });
 
-export const test = asyncHandler(async (req, res) => {
-  const x= await UpdateEnrollmentCountWithCircuitBreaker("673eb6f96366cdca81b05e85")
-  console.log(x);
-  res.status(StatusCodes.OK).json({ x });
-})
