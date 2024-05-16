@@ -1,9 +1,9 @@
-import enrollmentModel from "../../../DB/models/Enrollment.model.js";
-import { asyncHandler } from "../../utils/errorHandling.js";
+import enrollmentModel from "../../../../DB/models/Enrollment.model.js";
+import { asyncHandler } from "../../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
-import logsModel from "../../../DB/models/logs.model.js";
-import { InstructorNotification } from "../../utils/notification.js";
-import { UpdateEnrollmentCountWithCircuitBreaker } from "../../utils/UpdateCourseAPI.js";
+import logsModel from "../../../../DB/models/logs.model.js";
+import { InstructorNotification } from "../../../utils/notification.js";
+import { UpdateEnrollmentCountWithCircuitBreaker } from "../../../utils/UpdateCourseAPI.js";
 
 export const EnrollmentCourse = asyncHandler(async (req, res) => {
   const student = req.user;
@@ -72,56 +72,60 @@ export const CancelEnrollmentCourse = asyncHandler(async (req, res) => {
 });
 
 export const ManageEnrollmentCourse = asyncHandler(async (req, res) => {
-    const { Id } = req.params;
-    const { status } = req.body;
-    const instructor = req.user;
+  const { Id } = req.params;
+  const { status } = req.body;
+  const instructor = req.user;
 
-    const isEnroll = await enrollmentModel.findOne({
-      _id: Id,
-      "instructor.id": instructor.id,
-    })
+  const isEnroll = await enrollmentModel.findOne({
+    _id: Id,
+    "instructor.id": instructor.id,
+  });
 
-    if (!isEnroll) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Unauthorized" });
-    }
-    if (isEnroll.status == status) {
-      return res
-        .status(StatusCodes.CONFLICT)
-        .json({ message: "Already in this status" });
-    }
-    isEnroll.status = status;
-    const isEnrolled = await isEnroll.save();
+  if (!isEnroll) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: "Unauthorized" });
+  }
+  if (isEnroll.status == status) {
+    return res
+      .status(StatusCodes.CONFLICT)
+      .json({ message: "Already in this status" });
+  }
+  isEnroll.status = status;
+  const isEnrolled = await isEnroll.save();
 
-    await logsModel.create({
-        userId: req.user.id,
-        email: req.user.email,
-        role: req.user.role,
-        action: `Manage Enrolled in course ${isEnrolled.courseName} with status ${status}`,
-    })
-    InstructorNotification({ req, isEnrolled, operation: status });
+  await logsModel.create({
+    userId: req.user.id,
+    email: req.user.email,
+    role: req.user.role,
+    action: `Manage Enrolled in course ${isEnrolled.courseName} with status ${status}`,
+  });
+  InstructorNotification({ req, isEnrolled, operation: status });
 
-    res.status(StatusCodes.OK).json({ isEnrolled });
- 
+  res.status(StatusCodes.OK).json({ isEnrolled });
 });
 
 export const getPendingEnrollments = asyncHandler(async (req, res) => {
   const student = req.user;
-  const enrollments = await enrollmentModel
-    .find({ "student.id": student.id, status: "pending" })
+  const enrollments = await enrollmentModel.find({
+    "student.id": student.id,
+    status: "pending",
+  });
   res.status(StatusCodes.OK).json({ enrollments });
-})
-
-export const getPastEnrollments = asyncHandler(async (req, res) => {
-    const enrollments = await enrollmentModel
-      .find({ "student.id": req.user.id, status: { $ne: "pending" } })
-    res.status(StatusCodes.OK).json({ enrollments });
-  
 });
 
-//?Using in another microservice to check if user is enrolled 
+export const getPastEnrollments = asyncHandler(async (req, res) => {
+  const enrollments = await enrollmentModel.find({
+    "student.id": req.user.id,
+    status: { $ne: "pending" },
+  });
+  res.status(StatusCodes.OK).json({ enrollments });
+});
+
+//?Using in another microservice to check if user is enrolled
 export const checkIsEnrolled = asyncHandler(async (req, res) => {
   const { courseId } = req.params;
-  const {userId} = req.query
+  const { userId } = req.query;
   console.log(userId);
   console.log(courseId);
   const isEnrolled = await enrollmentModel.findOne({
@@ -136,15 +140,18 @@ export const checkIsEnrolled = asyncHandler(async (req, res) => {
 });
 //?using in another microservice to delete enrollment
 export const DeleteEnrollmentCourses = asyncHandler(async (req, res) => {
-  const {courseId} = req.params
-  await enrollmentModel.deleteMany({courseId})
-  res.status(StatusCodes.OK).json({ message: "Deleted" })
-})
+  const { courseId } = req.params;
+  await enrollmentModel.deleteMany({ courseId });
+  res.status(StatusCodes.OK).json({ message: "Deleted" });
+});
 //?using in another microservice to delete enrollment
 //*updating name of course in enrollments
 export const UpdateCourseName = asyncHandler(async (req, res) => {
-  const {courseId} = req.params
-  const {name} = req.body
-  await enrollmentModel.updateMany({courseId},{$set:{courseName:name}})
-  res.status(StatusCodes.OK).json({ message: "Updated" })
-})
+  const { courseId } = req.params;
+  const { name } = req.body;
+  await enrollmentModel.updateMany(
+    { courseId },
+    { $set: { courseName: name } }
+  );
+  res.status(StatusCodes.OK).json({ message: "Updated" });
+});
