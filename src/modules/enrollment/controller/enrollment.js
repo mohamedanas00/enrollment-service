@@ -122,6 +122,13 @@ export const getPastEnrollments = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ enrollments });
 });
 
+export const getInstructorEnrollments = asyncHandler(async (req, res) => {
+  const enrollments = await enrollmentModel.find({
+    "instructor.id": req.user.id,
+  });
+  res.status(StatusCodes.OK).json({ enrollments });
+});
+
 //?Using in another microservice to check if user is enrolled
 export const checkIsEnrolled = asyncHandler(async (req, res) => {
   const { courseId } = req.params;

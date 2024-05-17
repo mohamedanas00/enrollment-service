@@ -42,4 +42,10 @@ enrollmentRoutes.patch(
   enrollmentController.UpdateCourseName
 );
 
+enrollmentRoutes.get(
+  "/GetInstructorEnroll",
+  auth(userAuth.instructor),
+  enrollmentController.getInstructorEnrollments
+);
+
 export default enrollmentRoutes;
