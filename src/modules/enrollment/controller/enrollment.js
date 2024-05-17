@@ -5,7 +5,7 @@ import logsModel from "../../../../DB/models/logs.model.js";
 import { InstructorNotification } from "../../../utils/notification.js";
 import { UpdateEnrollmentCountWithCircuitBreaker } from "../../../utils/UpdateCourseAPI.js";
 
-export const EnrollmentCourse = asyncHandler(async (req, res) => {
+export const EnrollmentCourse = asyncHandler(async (req, res,next) => {
   const student = req.user;
   var { courseId, courseName, instructorId, instructorEmail, instructorName } =
     req.body;
@@ -43,7 +43,7 @@ export const EnrollmentCourse = asyncHandler(async (req, res) => {
   res.status(StatusCodes.CREATED).json({ isEnrolled });
 });
 
-export const CancelEnrollmentCourse = asyncHandler(async (req, res) => {
+export const CancelEnrollmentCourse = asyncHandler(async (req, res,next) => {
   const student = req.user;
   const { Id } = req.params;
   const isEnrolled = await enrollmentModel.findOne({
@@ -71,7 +71,7 @@ export const CancelEnrollmentCourse = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ CancelEnrollment });
 });
 
-export const ManageEnrollmentCourse = asyncHandler(async (req, res) => {
+export const ManageEnrollmentCourse = asyncHandler(async (req, res,next) => {
   const { Id } = req.params;
   const { status } = req.body;
   const instructor = req.user;
@@ -105,7 +105,7 @@ export const ManageEnrollmentCourse = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ isEnrolled });
 });
 
-export const getPendingEnrollments = asyncHandler(async (req, res) => {
+export const getPendingEnrollments = asyncHandler(async (req, res,next) => {
   const student = req.user;
   const enrollments = await enrollmentModel.find({
     "student.id": student.id,
@@ -114,7 +114,7 @@ export const getPendingEnrollments = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ enrollments });
 });
 
-export const getPastEnrollments = asyncHandler(async (req, res) => {
+export const getPastEnrollments = asyncHandler(async (req, res,next) => {
   const enrollments = await enrollmentModel.find({
     "student.id": req.user.id,
     status: { $ne: "pending" },
@@ -122,7 +122,7 @@ export const getPastEnrollments = asyncHandler(async (req, res) => {
   res.status(StatusCodes.OK).json({ enrollments });
 });
 
-export const getInstructorEnrollments = asyncHandler(async (req, res) => {
+export const getInstructorEnrollments = asyncHandler(async (req, res,next) => {
   const enrollments = await enrollmentModel.find({
     "instructor.id": req.user.id,
   });
@@ -130,30 +130,28 @@ export const getInstructorEnrollments = asyncHandler(async (req, res) => {
 });
 
 //?Using in another microservice to check if user is enrolled
-export const checkIsEnrolled = asyncHandler(async (req, res) => {
+export const checkIsEnrolled = asyncHandler(async (req, res,next) => {
   const { courseId } = req.params;
   const { userId } = req.query;
-  console.log(userId);
-  console.log(courseId);
   const isEnrolled = await enrollmentModel.findOne({
     courseId,
     "student.id": userId,
     status: "accepted",
   });
   if (!isEnrolled) {
-    return res.status(StatusCodes.CONFLICT).json({ message: "Not enrolled" });
+    return res.status(500).json({ message: "Not enrolled" });
   }
   res.status(StatusCodes.OK).json({ message: "Enrolled" });
 });
 //?using in another microservice to delete enrollment
-export const DeleteEnrollmentCourses = asyncHandler(async (req, res) => {
+export const DeleteEnrollmentCourses = asyncHandler(async (req, res,next) => {
   const { courseId } = req.params;
   await enrollmentModel.deleteMany({ courseId });
   res.status(StatusCodes.OK).json({ message: "Deleted" });
 });
 //?using in another microservice to delete enrollment
 //*updating name of course in enrollments
-export const UpdateCourseName = asyncHandler(async (req, res) => {
+export const UpdateCourseName = asyncHandler(async (req, res,next) => {
   const { courseId } = req.params;
   const { name } = req.body;
   await enrollmentModel.updateMany(
