@@ -66,7 +66,7 @@ export const StudentNotification = async ({
       var text = `Instructor ${req.user.name} rejected your Enrollment in course ${courseName} with ID:${courseId}`;
     }
     const html = emailHtml(text, studentEmail);
-    sendEmail({ to: instructorEmail, subject: operation, html });
+    sendEmail({ to: studentEmail, subject: operation, html });
   } catch (error) {
     new ErrorClass(
       `Error for creating notify messaging`,

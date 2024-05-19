@@ -2,7 +2,7 @@ import enrollmentModel from "../../../../DB/models/Enrollment.model.js";
 import { asyncHandler } from "../../../utils/errorHandling.js";
 import { StatusCodes } from "http-status-codes";
 import logsModel from "../../../../DB/models/logs.model.js";
-import { InstructorNotification } from "../../../utils/notification.js";
+import { InstructorNotification, StudentNotification } from "../../../utils/notification.js";
 import { UpdateEnrollmentCountWithCircuitBreaker } from "../../../utils/UpdateCourseAPI.js";
 
 export const EnrollmentCourse = asyncHandler(async (req, res,next) => {
@@ -100,7 +100,7 @@ export const ManageEnrollmentCourse = asyncHandler(async (req, res,next) => {
     role: req.user.role,
     action: `Manage Enrolled in course ${isEnrolled.courseName} with status ${status}`,
   });
-  InstructorNotification({ req, isEnrolled, operation: status });
+  StudentNotification({ req, isEnrolled, operation: status });
 
   res.status(StatusCodes.OK).json({ isEnrolled });
 });
